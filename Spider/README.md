@@ -3,4 +3,4 @@
 
 2. xiciproxy为爬取xici免费代理的爬虫项目
 
-3. 爬虫涉及到的原理细节参见[我的简书](https://www.jianshu.com/writer#/notebooks/31764274/notes/37335730)
+3. 爬虫涉及到的原理细节参见[我的简书](https://www.jianshu.com/p/93ef8ad8cd0f)
