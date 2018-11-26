@@ -28,6 +28,6 @@ some notes about related paper and blogs
 
 3 paper [Deep Learning for Event-Driven Stock Prediction](http://www.smallake.kr/wp-content/uploads/2017/04/329.pdf)
 
-4 paper 因果事理图谱构建及特征学习[Constructing Narrative Event Evolutionary Graph for Script Event Prediction](https://arxiv.org/pdf/1805.05081.pdf)
+4 paper 因果事理图谱构建及特征学习[Constructing and Embedding Abstract Event Causality Networks from Text Snippets](http://ir.hit.edu.cn/~sdzhao/CausalEmbedding.pdf)
 
 等总结笔记，未完待续
