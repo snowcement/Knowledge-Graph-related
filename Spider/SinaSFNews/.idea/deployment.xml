@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PublishConfigData" autoUpload="Always" serverName="webapp@10.0.91.87:22">
+    <serverData>
+      <paths name="webapp@10.0.91.87:22">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/home/webapp/script/wtt/KnowledgeGraph/SinaSFNews/" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
+    </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
+  </component>
+</project>

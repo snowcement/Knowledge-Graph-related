@@ -79,7 +79,7 @@ class NewsSpider(scrapy.Spider):
         # return item
         global CURRENT_PAGENUM
         CURRENT_PAGENUM += 1
-        self.file.write('Current parsing the %s th page\n' % CURRENT_PAGENUM)
+        self.file.write('Current parsing the %s th page at %s\n' % (CURRENT_PAGENUM, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
         self.file.flush()
         #网页分为电脑版和移动版，站点会根据用户的访问数据（user-agent）来决定返回给用户哪种网页
         if response.url in ['exception', '']:

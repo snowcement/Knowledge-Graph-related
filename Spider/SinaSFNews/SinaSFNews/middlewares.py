@@ -226,7 +226,7 @@ class MyRetryMiddleware(RetryMiddleware):
             reason = response_status_message(response.status)
             # 删除该代理
             self.delete_proxy(request.meta.get('proxy', False))
-            time.sleep(random.randint(3, 5))
+            time.sleep(random.randint(3,5))
             self.logger.warning('返回值异常, 进行重试...')
             return self.retry(request, reason, spider) or response
         return response
@@ -243,10 +243,18 @@ class MyRetryMiddleware(RetryMiddleware):
             return self.retry(request, exception, spider)
 
     def retry(self, request, reason, spider):
+        # 获取当前重试次数，当超限时，放弃该页面，继续爬取其他页面，否则会关闭爬虫
+        retry_times = request.meta.get("retry_times", 0)
+        if retry_times == self.max_retry_times:
+            return
+
         #更换request中的代理IP
-        proxy = request.meta['proxy']
-        index = proxy.index(':')
-        scheme = proxy[:index]
+        #爬取过程中会发生e.g.status code=301,http->https，如果还沿用原来proxy的头部，则会一直重试知道最大次数，因根据request.url的头部确定scheme
+        index = request.url.index(':')
+        scheme = request.url[:index]
+        # proxy = request.meta['proxy']
+        # index = proxy.index(':')
+        # scheme = proxy[:index]
         creds, proxynew = random.choice(PROXY_LIST[scheme])
         request.meta['proxy'] = proxynew
         return self._retry(request, reason, spider)
