@@ -30,4 +30,6 @@ some notes about related paper and blogs
 
 4 paper 因果事理图谱构建及特征学习[Constructing and Embedding Abstract Event Causality Networks from Text Snippets](http://ir.hit.edu.cn/~sdzhao/CausalEmbedding.pdf)
 
+5 paper 叙事事理图谱构建用于脚本事件的预测[Constructing Narrative Event Evolutionary Graph for Script Event Prediction](https://arxiv.org/pdf/1805.05081.pdf)
+
 等总结笔记，未完待续
