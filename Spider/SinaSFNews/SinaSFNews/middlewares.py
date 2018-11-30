@@ -27,6 +27,7 @@ import copy
 logger = logging.getLogger(__name__)
 PROXY_LIST = defaultdict(list)
 
+
 class SinasfnewsSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
@@ -243,10 +244,17 @@ class MyRetryMiddleware(RetryMiddleware):
             return self.retry(request, exception, spider)
 
     def retry(self, request, reason, spider):
-        # 获取当前重试次数，当超限时，放弃该页面，继续爬取其他页面，否则会关闭爬虫
+        # 获取当前重试次数，当超限时，放弃该页面(返回状态码为200,url为空的response，在parse阶段会自动过滤)，继续爬取其他页面，否则会关闭爬虫
         retry_times = request.meta.get("retry_times", 0)
         if retry_times == self.max_retry_times:
-            return
+            # 对应横向爬取page=**页面，为了能够继续横向爬取，需要url提取当前爬取page页数
+            # 纵向爬取的页面，直接将url置空
+            ret = request.url.find('&page=')
+            if ret != -1:
+                response = HtmlResponse(url=request.url)
+            else:
+                response = HtmlResponse(url='')
+            return response
 
         #更换request中的代理IP
         #爬取过程中会发生e.g.status code=301,http->https，如果还沿用原来proxy的头部，则会一直重试知道最大次数，因根据request.url的头部确定scheme

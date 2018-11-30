@@ -23,7 +23,7 @@ NEWSPIDER_MODULE = 'SinaSFNews.spiders'
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-#CONCURRENT_REQUESTS = 32
+CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
@@ -33,8 +33,8 @@ DOWNLOAD_TIMEOUT = 15#下载器在超时前等待的时间量（以秒为单位�
 RANDOMIZE_DOWNLOAD_DELAY = True#在从同一网站获取请求时等待随机时间,降低了由分析请求的站点检测（并随后阻塞）爬行器的机会
 
 # The download delay setting will honor only one of:
-CONCURRENT_REQUESTS_PER_DOMAIN = 4
-#CONCURRENT_REQUESTS_PER_IP = 16
+#CONCURRENT_REQUESTS_PER_DOMAIN = 16
+CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
 #COOKIES_ENABLED = False

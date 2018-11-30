@@ -49,7 +49,7 @@ class NewsSpider(scrapy.Spider):
             else:
                 loader.add_xpath('title', '//*[@id="artibodyTitle"]/text()')
                 loader.add_xpath('time', '//*[@id="navtimeSource"]/text()', MapCompose(lambda x: x.strip()), Join(''))
-                loader.add_xpath('origin', '//*[@id="navtimeSource"]/span/text()', MapCompose(lambda x: x.strip()),
+                loader.add_xpath('origin', '//*[@id="navtimeSource"]//*/text()', MapCompose(lambda x: x.strip()),
                                  Join('\t'))
                 loader.add_xpath('tag', '//*[@class="article-keywords"]//a/text()', MapCompose(lambda x: x.strip()),
                                  Join('\t'))

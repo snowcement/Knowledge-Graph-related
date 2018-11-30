@@ -29,27 +29,31 @@ class NewsSpider(scrapy.Spider):
 
     def parse(self, response):
         responsestr = response.text.replace('try{feedCardJsonpCallback(', '').replace(');}catch(e){};', '')
-        if responsestr.strip() != '':
-            dict = json.loads(responsestr)
-            result = dict['result']
-            data = result['data']
-            for meta in data:
-                url = meta['url']  # wapurl为在移动端显示的新闻url
-                yield Request(url, callback=self.parse_item)  # , headers=self.headers
 
-            # 提取连接中page信息，并将当前页更新
-            page_info = re.search(r'(page=[1-9][0-9]*)', response.url).group(1)
-            page_num = int(page_info[5:])
-            if page_num < MAX_PAGE:
-                page_num += 1
-                page_info_new = 'page=' + str(page_num)
-                next_url = re.sub(r'(page=[1-9][0-9]*)', page_info_new, response.url)
-                # print("next_url: %s" % next_url)
-                # 处理链接
-                meta = {
-                    'download_timeout': 15
-                }
-                yield Request(next_url, dont_filter=True, meta=meta)  # , headers=self.headers
+        # 提取连接中page信息，并将当前页更新
+        page_info = re.search(r'(page=[1-9][0-9]*)', response.url).group(1)
+        page_num = int(page_info[5:])
+        if page_num < MAX_PAGE:
+            page_num += 1
+            page_info_new = 'page=' + str(page_num)
+            next_url = re.sub(r'(page=[1-9][0-9]*)', page_info_new, response.url)
+            # print("next_url: %s" % next_url)
+            # 处理链接
+            meta = {
+                'download_timeout': 15
+            }
+            yield Request(next_url, dont_filter=True, meta=meta)  # , headers=self.headers
+
+        if responsestr.strip() != '':
+            try:
+                dict_ = json.loads(responsestr)
+                result = dict_['result']
+                data = result['data']
+                for meta in data:
+                    url = meta['url']  # wapurl为在移动端显示的新闻url
+                    yield Request(url, callback=self.parse_item)  # , headers=self.headers
+            except Exception as e:
+                print("Parsing Exception: %s" % e)
 
     def parse_item(self, response):
         '''
@@ -77,13 +81,16 @@ class NewsSpider(scrapy.Spider):
         # item['tag'] = response.xpath('//*[@id="keywords"]//a/text()').extract()
         # item['origin'] = response.xpath('//span[@class="source"]/text()').extract()[0]
         # return item
+
+        #网页分为电脑版和移动版，站点会根据用户的访问数据（user-agent）来决定返回给用户哪种网页
+        if response.url in ['exception', '']:
+            return
+        #过滤掉的网页不计算在总解析页面数中
         global CURRENT_PAGENUM
         CURRENT_PAGENUM += 1
         self.file.write('Current parsing the %s th page at %s\n' % (CURRENT_PAGENUM, datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')))
         self.file.flush()
-        #网页分为电脑版和移动版，站点会根据用户的访问数据（user-agent）来决定返回给用户哪种网页
-        if response.url in ['exception', '']:
-            return
+
         loader = ItemLoader(item=SinasfnewsItem(), response=response)
         if response.url.endswith('wap'):#移动端
             loader.add_xpath('title', '//h1[@class="art_tit_h1"]/text()')
@@ -112,7 +119,7 @@ class NewsSpider(scrapy.Spider):
             else:
                 loader.add_xpath('title', '//*[@id="artibodyTitle"]/text()')
                 loader.add_xpath('time', '//*[@id="navtimeSource"]/text()', MapCompose(lambda x: x.strip()), Join(''))
-                loader.add_xpath('origin', '//*[@id="navtimeSource"]/span/text()', MapCompose(lambda x: x.strip()),
+                loader.add_xpath('origin', '//*[@id="navtimeSource"]//*/text()', MapCompose(lambda x: x.strip()),
                                  Join('\t'))
                 loader.add_xpath('tag', '//*[@class="article-keywords"]//a/text()', MapCompose(lambda x: x.strip()),
                                  Join('\t'))
